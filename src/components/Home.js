@@ -1,12 +1,47 @@
-import React from 'react'
+import React, { Component } from "react";
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
-const Home = () => {
-  return (
-    <div className='container'>
-        <h4 className='center'>Home</h4>
-        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Excepturi qui labore culpa itaque est quas molestias magnam deleniti adipisci aliquam quo ullam, pariatur maxime unde molestiae quaerat voluptatibus veritatis repellat libero a optio incidunt animi dolor ducimus. Alias perspiciatis architecto tempore illum nemo ratione libero provident aut inventore tempora, id ducimus error iusto saepe exercitationem cum doloribus odio voluptatibus iure quasi recusandae culpa est in. Beatae veniam dolore facilis ipsa ut labore dolorem debitis cum sunt, minus laudantium, repellat reprehenderit iste ducimus nesciunt dolores, rem blanditiis! Iste aut minus pariatur placeat est. Quo, ducimus maxime! Architecto officia possimus porro blanditiis.</p>
-    </div>
-  )
+class Home extends Component {
+    state = {
+        posts: []
+    }
+
+    componentDidMount(){
+        axios.get('https://jsonplaceholder.typicode.com/posts')
+        .then(res => {
+            this.setState({
+                posts: res.data.slice(0, 10)
+            })
+        })
+    }
+    render() {
+        const { posts } = this.state;
+        const postList = posts.length ? (
+            posts.map(post => {
+                return(
+                <div className="post card" key={post.id}>
+                    <div className="card-content">
+                        <Link to={'/' + post.id}>
+                            <span className="card-title">{post.title}</span>
+                        </Link>
+                        <p>{post.body}</p>
+                    </div>
+                </div>
+                )
+            })
+        ) : (
+            <div className="center">No posts to show</div>
+        )
+
+        return (
+            <div>
+            <div className="container">
+                <h4 className="center">Home</h4>
+                {postList}
+            </div>
+            </div>
+        );
+    }
 }
-
-export default Home
+export default Home;
